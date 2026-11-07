@@ -1,5 +1,22 @@
 
-enum UserRole{user, professional, admin}
+enum UserRole{
+  
+  user(code: 'u'), 
+  professional(code: 'p'),
+  admin(code: 'a');
+
+  final String code;
+  
+  UserRole({required this.code});
+
+  factory UserRole.fromCode(String code) {
+    return UserRole.values.firstWhere(
+      (e) => e.code == code,
+      orElse: () => UserRole.user,
+    );
+  }
+  
+  }
 
 class UserModel{
   final String id;
@@ -22,12 +39,12 @@ class UserModel{
   //Ahora vamos a realizar la conversión de los datos a JSON para que sea más facil 
   //a la hora hacer la petición
 
-  factory FromJson(Map<String, dynamic> json){
+  factory UserModel.fromJson(Map<String, dynamic> json){
     return UserModel(
-      id: json['id'], 
-      name: json['name'], 
-      email: json['email'], 
-      role: json['role'], 
+      id: json['id'] is int ? json['id'] : int.parse(json['id'].toString()), 
+      name: json['name'] ?? '', 
+      email: json['email'] ?? '', 
+      role: UserRole.fromCode(json['role'] ?? ''), 
       active: json['active']
       );
   }
