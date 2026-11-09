@@ -8,7 +8,7 @@ class UserProvider extends ChangeNotifier {
   final _apiService= ApiService();
   List<UserModel> users=[];
 
-  Future<void> fetchUsers(String token) async {
+  Future<void> getUsers(String token) async {
     notifyListeners();
 
     try {
@@ -22,13 +22,13 @@ class UserProvider extends ChangeNotifier {
   // Activar usuario
   Future<bool> activateUser(int userId, String token) async {
     try {
-      final res = await _apiService.activateUser(userId, token);
-      if (res['success'] == true) {
-        await fetchUsers(token); // Recarga la lista actualizada
+      final respuesta = await _apiService.activateUser(userId, token);
+      if (respuesta['success'] == true) {
+        await getUsers(token); // Recarga la lista actualizada
         return true;
       }
       return false;
-    } catch (_) {
+    } catch (e) {
       return false;
     }
   }
@@ -36,13 +36,13 @@ class UserProvider extends ChangeNotifier {
   // Desactivar usuario
   Future<bool> deactivateUser(int userId, String token) async {
     try {
-      final res = await _apiService.desactivateUser(userId, token);
-      if (res['success'] == true) {
-        await fetchUsers(token);
+      final respuesta = await _apiService.desactivateUser(userId, token);
+      if (respuesta['success'] == true) {
+        await getUsers(token);
         return true;
       }
       return false;
-    } catch (_) {
+    } catch (e) {
       return false;
     }
   }
@@ -50,13 +50,13 @@ class UserProvider extends ChangeNotifier {
   // Eliminar usuario
   Future<bool> deleteUser(int userId, String token) async {
     try {
-      final res = await _apiService.deleteUser(userId, token);
-      if (res['success'] == true) {
-        await fetchUsers(token);
+      final respuesta = await _apiService.deleteUser(userId, token);
+      if (respuesta['success'] == true) {
+        await getUsers(token);
         return true;
       }
       return false;
-    } catch (_) {
+    } catch (e) {
       return false;
     }
   }
@@ -64,13 +64,13 @@ class UserProvider extends ChangeNotifier {
   // Actualizar usuario
   Future<bool> updateUser(int userId, String newName, String token) async {
     try {
-      final res = await _apiService.updateUser(userId, newName, token);
-      if (res['success'] == true) {
-        await fetchUsers(token);
+      final respuesta = await _apiService.updateUser(userId, newName, token);
+      if (respuesta['success'] == true) {
+        await getUsers(token);
         return true;
       }
       return false;
-    } catch (_) {
+    } catch (e) {
       return false;
     }
   }
