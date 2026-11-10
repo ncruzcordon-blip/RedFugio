@@ -36,7 +36,7 @@ class ApiService {
   }
 
   //register 
-  Future register(String name, String email, String password, String role, String nombreOrganizacion) async{
+  Future register(String name, String email, String password, String role, String? nombreOrganizacion) async{
     
     final respuesta= await _dio.post(
       '/register',

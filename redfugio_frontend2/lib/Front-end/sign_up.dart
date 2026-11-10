@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:redfugio_frontend2/features/authentication/providers/auth_provider.dart';
+import 'package:redfugio_frontend2/features/users/providers/user_provider.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -28,15 +31,82 @@ class _SignUpState extends State<SignUp>{
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final passwordConfirmationController = TextEditingController();
+  final entidadController = TextEditingController();
 
   bool get formularioCompleto {
     return nombreController.text.trim().isNotEmpty;
   }
 
   bool errorSeleccion = false;
+
+  @override
+  void dispose() {
+    nombreController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    passwordConfirmationController.dispose();
+    entidadController.dispose();
+    super.dispose();
+  }
+
+  /// Método para ejecutar el registro con tu AuthProvider
+  void _RegistroPresionado() async {
+    // 1. Comprobamos la selección del tipo de cuenta
+    if (seleccion.isEmpty) {
+      setState(() {
+        errorSeleccion = true;
+      });
+    } else {
+      setState(() {
+        errorSeleccion = false;
+      });
+    }
+
+    // 2. Validamos el formulario entero
+    if (formKey.currentState!.validate() && !errorSeleccion) {
+      final authProvider = context.read<AuthProvider>();
+
+      // Mapeamos la selección de tu compañera al código de la API ('u' o 'p')
+      String roleCode = (seleccion == 'Profesional/Entidad') ? 'p' : 'u';
+
+      // 3. Ejecutamos el registro llamando al AuthProvider
+      bool exito = await authProvider.register(
+        name: nombreController.text.trim(),
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+        role: roleCode,
+        organizationName: roleCode == 'p' ? entidadController.text.trim() : null,
+      );
+
+      if (!mounted) return;
+
+      // 4. Evaluamos la respuesta
+      if (exito) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.green,
+            content: Text('Cuenta creada con éxito. Inicia sesión.'),
+          ),
+        );
+        // Volvemos a la pantalla de Login
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.redAccent,
+            content: Text(
+              authProvider.errorMessage ?? 'Error al registrar el usuario.',
+            ),
+          ),
+        );
+      }
+    }
+  }
   
   @override
   Widget build(BuildContext context){
+
+    final authProvider = context.watch<AuthProvider>();
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 231, 231, 231),
       body: SafeArea(
@@ -333,11 +403,7 @@ class _SignUpState extends State<SignUp>{
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                onPressed: (){
-                  if(formKey.currentState!.validate() && seleccion.isNotEmpty){
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('PROCESSING DATA')),);
-                  }
-                }, 
+                onPressed:authProvider.isLoading ? null : _RegistroPresionado,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 252, 110, 100),
                   padding: EdgeInsets.all(20),
