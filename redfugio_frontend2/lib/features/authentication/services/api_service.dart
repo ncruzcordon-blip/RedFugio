@@ -42,7 +42,7 @@ class ApiService {
 
     //Comprobación de existencia de usuario
     //devuelve el data que contiene todos los datos de dicho usuario 
-   /* if(respuesta.data['success'] == false){
+    if(respuesta.data['success'] == false){
       return respuesta.data['message'];
     } 
     //devuelve el data que contiene todos los datos de dicho usuario  
@@ -61,7 +61,7 @@ class ApiService {
         'password' : password,
         'c_password': password,
         'role': role,
-        'organization_name' : (role=='p' && nombreOrganizacion !=   null && nombreOrganizacion.isNotEmpty) ?
+        'organization_name' : (role=='p' && nombreOrganizacion != null && nombreOrganizacion.isNotEmpty) ?
         nombreOrganizacion : '',
       }
     );
@@ -109,7 +109,7 @@ class ApiService {
   }
 
   //Activate
-  Future activateUser(int idUser, String token) async {
+  Future activateUser(String idUser, String token) async {
     try{
       final respuesta= await _dio.post(
         '/activate',
@@ -133,7 +133,7 @@ class ApiService {
     }
   }
 
-  Future desactivateUser(int idUser, String token) async{
+  Future deactivateUser(String idUser, String token) async{
      try{
       final respuesta= await _dio.post(
         '/deactivate',
@@ -153,11 +153,11 @@ class ApiService {
       if (e.response != null && e.response?.data != null) {
         return e.response?.data;
       }
-        throw Exception('Error al activar el usuario: ${e.message}');
+        throw Exception('Error al desactivar el usuario: ${e.message}');
     }
   }
 
-   Future deleteUser(int idUser, String token) async{
+   Future deleteUser(String idUser, String token) async{
      try{
       final respuesta= await _dio.post(
         '/deleteUser',
@@ -177,11 +177,11 @@ class ApiService {
       if (e.response != null && e.response?.data != null) {
         return e.response?.data;
       }
-        throw Exception('Error al activar el usuario: ${e.message}');
+        throw Exception('Error al eliminar el usuario: ${e.message}');
     }
   }
 
-  Future updateUser(int idUser, String newName, String token) async {
+  Future updateUser(String idUser, String newName, String token) async {
     try {
       final respuesta = await _dio.post(
         '/updateUser',
