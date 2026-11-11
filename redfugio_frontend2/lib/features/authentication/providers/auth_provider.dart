@@ -27,10 +27,12 @@ class AuthProvider extends ChangeNotifier{
 
   Future<bool> login(String email, String password) async{
     isLoading= true;
+    //final respuesta = await ApiService().login(email, password);
+
     try {
       final respuesta = await ApiService().login(email, password);
 
-      if (respuesta['success'] == true) {
+      if ( respuesta is Map<String, dynamic> && respuesta['success'] == true) {
         token = respuesta['data']['token'];
         userActual = UserModel.fromJson(respuesta['data']);
 
@@ -40,11 +42,15 @@ class AuthProvider extends ChangeNotifier{
 
         isLoading = false;
         notifyListeners();
+
         return true;
+
       } else {
         errorMessage = respuesta['message'] ?? 'Error de autenticación';
+        
         isLoading = false;
         notifyListeners();
+        
         return false;
       }
     } catch (e) {
@@ -70,13 +76,17 @@ class AuthProvider extends ChangeNotifier{
       }else{
         errorMessage= respuesta['message'] ?? 'Error al registrar al usuario';
         isLoading=false;
+
+        isLoading = false;
         notifyListeners();
+        
         return false;
       }
     }catch(e){
       token= null;
       userActual=null;
       await _almacenamientoToken.deleteToken();
+
       notifyListeners();
       return false;
     }
