@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:redfugio_frontend2/Front-end/sign_up.dart';
 import 'package:redfugio_frontend2/features/authentication/providers/auth_provider.dart';
 import 'package:redfugio_frontend2/features/users/providers/user_provider.dart';
 import 'Front-end/login_page.dart';
@@ -31,6 +32,10 @@ class MyApp extends StatelessWidget {
           return LoginPage();
         },
       ),
+
+      routes: {
+        '/signUp': (context) => const SignUp()
+      }
     );
   }
 }

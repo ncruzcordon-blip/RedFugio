@@ -184,7 +184,7 @@ class _LoginPageState extends State<LoginPage>{
                     ),
                   ),
                   TextButton(onPressed: (){
-                  Navigator.pushNamed(context, '/second');
+                  Navigator.pushNamed(context, '/signUp');
                     }, 
                   child: const Text('Crear cuenta')
                   ),

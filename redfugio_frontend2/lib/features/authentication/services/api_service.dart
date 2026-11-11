@@ -17,8 +17,8 @@ class ApiService {
 
   //login 
   Future login(String email, String password) async{
-
-    final respuesta= await _dio.post(
+    try{
+        final respuesta= await _dio.post(
       '/login',
       data: {
         'email' : email,
@@ -26,19 +26,34 @@ class ApiService {
       }
     );
 
+    return respuesta.data;
+
+    }on DioException catch(e){
+      print('STATUS CODE: ${e.response?.statusCode}');
+      print('RESPUESTA API: ${e.response?.data}');
+
+      if(e.response !=null && e.response?.data != null){
+        return e.response!.data;
+      }
+    }
+    
+    //no ha habido respuesta del servidor
+    throw Exception('No se ha podido conectar con el servidor');
+
     //Comprobación de existencia de usuario
     //devuelve el data que contiene todos los datos de dicho usuario 
-    if(respuesta.data['success'] == false){
+   /* if(respuesta.data['success'] == false){
       return respuesta.data['message'];
     } 
     //devuelve el data que contiene todos los datos de dicho usuario  
-    return respuesta.data;
+    return respuesta.data;*/
   }
 
   //register 
   Future register(String name, String email, String password, String role, String? nombreOrganizacion) async{
     
-    final respuesta= await _dio.post(
+    try{
+      final respuesta= await _dio.post(
       '/register',
       data: {
         'name': name,
@@ -51,11 +66,22 @@ class ApiService {
       }
     );
 
-    if(respuesta.data['success'] == false){
+    return respuesta.data;
+
+    }on DioException catch(e){
+      //la API ha respondido con un error
+      if(e.response != null && e.response?.data != null){
+        return e.response!.data;
+      }
+    }
+    
+    throw Exception('No se ha podido conectar con el servidor');
+
+    /*if(respuesta.data['success'] == false){
       return respuesta.data['message'];
     }
+    return respuesta.data;*/
 
-    return respuesta.data;
   }
 
   //getUsers

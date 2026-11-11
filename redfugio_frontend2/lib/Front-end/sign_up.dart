@@ -386,6 +386,7 @@ class _SignUpState extends State<SignUp>{
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: TextField(
+                      controller: entidadController,
                       enabled: seleccion == 'Profesional/Entidad',
                       decoration: estiloTexto.copyWith(
                       hintText: 'Escribe el nombre de tu entidad o especialización',
