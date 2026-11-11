@@ -1,7 +1,7 @@
 
 enum UserRole{
   
-  user(code: 'u'), 
+  user(code: 'u',), 
   professional(code: 'p'),
   admin(code: 'a');
 

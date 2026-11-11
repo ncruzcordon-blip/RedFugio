@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:redfugio_frontend2/features/authentication/providers/auth_provider.dart';
-import 'package:redfugio_frontend2/features/users/providers/user_provider.dart';
 
 class SignUp extends StatefulWidget {
-  const SignUp({Key? key}) : super(key: key);
+  const SignUp({super.key});
 
   @override
   State<SignUp> createState() => _SignUpState();
@@ -50,7 +49,7 @@ class _SignUpState extends State<SignUp>{
   }
 
   /// Método para ejecutar el registro con tu AuthProvider
-  void _RegistroPresionado() async {
+  void _registroPresionado() async {
     // 1. Comprobamos la selección del tipo de cuenta
     if (seleccion.isEmpty) {
       setState(() {
@@ -403,7 +402,7 @@ class _SignUpState extends State<SignUp>{
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                onPressed:authProvider.isLoading ? null : _RegistroPresionado,
+                onPressed:authProvider.isLoading ? null : _registroPresionado,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 252, 110, 100),
                   padding: EdgeInsets.all(20),

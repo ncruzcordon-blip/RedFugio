@@ -27,8 +27,6 @@ class AuthProvider extends ChangeNotifier{
 
   Future<bool> login(String email, String password) async{
     isLoading= true;
-    final respuesta = await ApiService().login(email, password);
-
     try {
       final respuesta = await ApiService().login(email, password);
 
