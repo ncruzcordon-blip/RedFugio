@@ -56,6 +56,12 @@
       "languageVersion": "3.9"
     },
     {
+      "name": "cupertino_ui",
+      "rootUri": "file:///C:/Users/THORMY/AppData/Local/Pub/Cache/hosted/pub.dev/cupertino_ui-1.1.6",
+      "packageUri": "lib/",
+      "languageVersion": "3.13"
+    },
+    {
       "name": "dio",
       "rootUri": "file:///C:/Users/THORMY/AppData/Local/Pub/Cache/hosted/pub.dev/dio-5.11.1",
       "packageUri": "lib/",
@@ -90,6 +96,12 @@
       "rootUri": "file:///C:/Users/THORMY/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_lints-6.0.0",
       "packageUri": "lib/",
       "languageVersion": "3.8"
+    },
+    {
+      "name": "flutter_localizations",
+      "rootUri": "file:///C:/flutter/packages/flutter_localizations",
+      "packageUri": "lib/",
+      "languageVersion": "3.11"
     },
     {
       "name": "flutter_secure_storage",
@@ -129,9 +141,9 @@
     },
     {
       "name": "flutter_slidable",
-      "rootUri": "file:///C:/Users/THORMY/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_slidable-3.1.2",
+      "rootUri": "file:///C:/Users/THORMY/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_slidable-5.2.0",
       "packageUri": "lib/",
-      "languageVersion": "2.17"
+      "languageVersion": "3.13"
     },
     {
       "name": "flutter_test",
@@ -156,6 +168,12 @@
       "rootUri": "file:///C:/Users/THORMY/AppData/Local/Pub/Cache/hosted/pub.dev/http_parser-4.1.2",
       "packageUri": "lib/",
       "languageVersion": "3.4"
+    },
+    {
+      "name": "intl",
+      "rootUri": "file:///C:/Users/THORMY/AppData/Local/Pub/Cache/hosted/pub.dev/intl-0.20.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
     },
     {
       "name": "jni",
@@ -222,6 +240,12 @@
       "rootUri": "file:///C:/Users/THORMY/AppData/Local/Pub/Cache/hosted/pub.dev/material_color_utilities-0.13.0",
       "packageUri": "lib/",
       "languageVersion": "3.5"
+    },
+    {
+      "name": "material_ui",
+      "rootUri": "file:///C:/Users/THORMY/AppData/Local/Pub/Cache/hosted/pub.dev/material_ui-1.11.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.13"
     },
     {
       "name": "meta",

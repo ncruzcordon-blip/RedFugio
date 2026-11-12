@@ -109,7 +109,9 @@ class _SignUpState extends State<SignUp>{
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 231, 231, 231),
       body: SafeArea(
-        child: Center(
+//         child: Center(
+        child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Form(
             key: formKey,
           child: Column(
@@ -230,6 +232,9 @@ class _SignUpState extends State<SignUp>{
                       validator: (valor) {
                         if(valor == null || valor.trim().isEmpty){
                           return 'Requerido';
+                        }
+                        if (valor.trim().length < 8) {
+                          return 'La contraseña debe tener al menos 8 caracteres';
                         }
                         return null;
                       },
@@ -384,9 +389,16 @@ class _SignUpState extends State<SignUp>{
                   decoration: estiloRecuadro,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20.0),
-                    child: TextField(
+//                     child: TextField(
+                    child: TextFormField(
                       controller: entidadController,
                       enabled: seleccion == 'Profesional/Entidad',
+                      validator: (valor) {
+                        if (seleccion == 'Profesional/Entidad' && (valor == null || valor.trim().isEmpty)) {
+                          return 'Indica el nombre de tu organización';
+                        }
+                        return null;
+                      },
                       decoration: estiloTexto.copyWith(
                       hintText: 'Escribe el nombre de tu entidad o especialización',
                       ),

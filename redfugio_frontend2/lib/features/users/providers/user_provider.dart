@@ -14,11 +14,19 @@ class UserProvider extends ChangeNotifier {
     errorMessage = null;
     notifyListeners(); 
 
+     debugPrint('USER PROVIDER: iniciando petición');
+
     try {
       users = await _apiService.getUsers(token);
+
+      debugPrint('USUARIOS RECIBIDOS: ${users.length}');
+
       isLoading = false;
-      notifyListeners(); 
+      notifyListeners();
+
     } catch (e) {
+      debugPrint('ERROR AL OBTENER USUARIOS: $e');
+
       errorMessage = e.toString();
       isLoading = false;
       notifyListeners();
@@ -68,15 +76,38 @@ class UserProvider extends ChangeNotifier {
   }
 
   /// Actualizar el nombre de un usuario
-  Future<bool> updateUser(String userId, String newName, String token) async {
+//   Future<bool> updateUser(String userId, String newName, String token) async {
+  Future<bool> updateUser(String userId, String newName, String token, {String? email, String? role, String? organizationName}) async {
+    errorMessage = null;
     try {
-      final respuesta = await _apiService.updateUser(userId, newName, token);
+//       final respuesta = await _apiService.updateUser(userId, newName, token);
+      final respuesta = await _apiService.updateUser(userId, newName, token, email: email, role: role, organizationName: organizationName);
       if (respuesta['success'] == true) {
         await getUsers(token); 
+        if (errorMessage != null) return false;
+        final guardados = users.where((user) => user.id == userId);
+        if (guardados.isEmpty) {
+          errorMessage = 'No se ha podido verificar el usuario guardado.';
+          notifyListeners();
+          return false;
+        }
+        final guardado = guardados.first;
+        if (guardado.name != newName ||
+            (email != null && guardado.email != email) ||
+            (role != null && guardado.role.code != role) ||
+            (organizationName != null && (guardado.organizationName ?? '') != organizationName)) {
+          errorMessage = 'La API no ha guardado todos los campos. Puede haberse guardado solo parte de los cambios; revisa los datos. Es necesario ampliar el backend para los campos no admitidos.';
+          notifyListeners();
+          return false;
+        }
         return true;
       }
+      errorMessage = respuesta['message'] ?? 'No se ha podido actualizar el usuario.';
+      notifyListeners();
       return false;
     } catch (e) {
+      errorMessage = 'No se ha podido actualizar el usuario. Comprueba la conexión.';
+      notifyListeners();
       return false;
     }
   }
