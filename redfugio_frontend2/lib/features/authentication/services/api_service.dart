@@ -42,7 +42,7 @@ class ApiService {
 
     //Comprobación de existencia de usuario
     //devuelve el data que contiene todos los datos de dicho usuario 
-    if(respuesta.data['success'] == false){
+    /*if(respuesta.data['success'] == false){
       return respuesta.data['message'];
     } 
     //devuelve el data que contiene todos los datos de dicho usuario  
@@ -181,13 +181,17 @@ class ApiService {
     }
   }
 
-  Future updateUser(String idUser, String newName, String token) async {
+//   Future updateUser(String idUser, String newName, String token) async {
+  Future updateUser(String idUser, String newName, String token, {String? email, String? role, String? organizationName}) async {
     try {
       final respuesta = await _dio.post(
         '/updateUser',
         data: {
           'id': idUser,
           'name': newName,
+          if (email != null) 'email': email,
+          if (role != null) 'role': role,
+          if (organizationName != null) 'organization_name': organizationName,
         },
         options: Options(
           headers: {

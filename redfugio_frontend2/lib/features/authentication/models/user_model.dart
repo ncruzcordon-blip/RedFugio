@@ -41,11 +41,14 @@ class UserModel{
 
   factory UserModel.fromJson(Map<String, dynamic> json){
     return UserModel(
-      id: json['id'] is int ? json['id'] : int.parse(json['id'].toString()), 
+      //id: json['id'] is int ? json['id'] : int.parse(json['id'].toString()), 
+      id: json['id'].toString(),
       name: json['name'] ?? '', 
-      email: json['email'] ?? '', 
+      email: json['email'] ?? '',
+      organizationName: json['organization_name'], 
       role: UserRole.fromCode(json['role'] ?? ''), 
-      active: json['active']
+      // active: json['active']
+      active: json['actived'] == true || json['actived'] == 1 || json['actived'] == '1'
       );
   }
 }
