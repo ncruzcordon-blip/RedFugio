@@ -3,6 +3,7 @@ enum UserRole{
   
   user(code: 'u',), 
   professional(code: 'p'),
+  passerby(code: 'v'),
   admin(code: 'a');
 
   final String code;

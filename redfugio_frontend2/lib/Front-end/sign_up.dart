@@ -48,9 +48,9 @@ class _SignUpState extends State<SignUp>{
     super.dispose();
   }
 
-  /// Método para ejecutar el registro con tu AuthProvider
+  //Ejecutar registro
   void _registroPresionado() async {
-    // 1. Comprobamos la selección del tipo de cuenta
+    //tipo de cuenta
     if (seleccion.isEmpty) {
       setState(() {
         errorSeleccion = true;
@@ -61,14 +61,11 @@ class _SignUpState extends State<SignUp>{
       });
     }
 
-    // 2. Validamos el formulario entero
     if (formKey.currentState!.validate() && !errorSeleccion) {
       final authProvider = context.read<AuthProvider>();
 
-      // Mapeamos la selección de tu compañera al código de la API ('u' o 'p')
-      String roleCode = (seleccion == 'Profesional/Entidad') ? 'p' : 'u';
+      final roleCode = {'Usuario': 'u', 'Profesional/Entidad': 'p', 'Voluntario': 'v'}[seleccion]!;
 
-      // 3. Ejecutamos el registro llamando al AuthProvider
       bool exito = await authProvider.register(
         name: nombreController.text.trim(),
         email: emailController.text.trim(),
@@ -79,15 +76,15 @@ class _SignUpState extends State<SignUp>{
 
       if (!mounted) return;
 
-      // 4. Evaluamos la respuesta
       if (exito) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             backgroundColor: Colors.green,
-            content: Text('Cuenta creada con éxito. Inicia sesión.'),
+            content: Text('Cuenta creada con éxito, a espera de confirmación administrativa.'),
           ),
         );
-        // Volvemos a la pantalla de Login
+
+        //Volver a login
         Navigator.pop(context);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -109,7 +106,6 @@ class _SignUpState extends State<SignUp>{
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 231, 231, 231),
       body: SafeArea(
-//         child: Center(
         child: SingleChildScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Form(
@@ -145,7 +141,7 @@ class _SignUpState extends State<SignUp>{
                 padding: const EdgeInsets.only(right: 185.0),
                 child: Text('NOMBRE COMPLETO'),
               ),
-  //NOMBRE textfield
+ 
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: Container(
@@ -166,15 +162,10 @@ class _SignUpState extends State<SignUp>{
                               }
                                 return null;
                               },
-
-                            //onChanged: (value) => {
-                              //setState(() {})
-                            //},
                           ),
                         ),    
                       ),
                     ),
-              
               
               SizedBox(height: 20),
 
@@ -183,7 +174,6 @@ class _SignUpState extends State<SignUp>{
                 padding: const EdgeInsets.only(right: 185.0),
                 child: Text('CORREO ELECTRÓNICO'),
               ),
-              //email textfield
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: Container(
@@ -207,8 +197,7 @@ class _SignUpState extends State<SignUp>{
                         return null;
                         },
                     ),
-                  ),
-                    
+                  ),  
                 ),
               ),
               
@@ -218,7 +207,6 @@ class _SignUpState extends State<SignUp>{
                 padding: const EdgeInsets.only(right: 250.0),
                 child: Text('CONTRASEÑA'),
               ),
-              //password textfield
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: Container(
@@ -241,10 +229,9 @@ class _SignUpState extends State<SignUp>{
 
                       decoration: estiloTexto.copyWith(
                       hintText: 'Password',
+                      ),
                     ),
-                                ),
-                  ),
-                    
+                  ), 
                 ),
               ),
 
@@ -255,7 +242,6 @@ class _SignUpState extends State<SignUp>{
                 padding: const EdgeInsets.only(right: 160.0),
                 child: Text('CONFIRMAR CONTRASEÑA'),
               ),
-              //password textfield
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: Container(
@@ -278,10 +264,9 @@ class _SignUpState extends State<SignUp>{
 
                       decoration: estiloTexto.copyWith(
                       hintText: 'Confirmar contraseña',
+                      ),
                     ),
-                                ),
                   ),
-                    
                 ),
               ),
 
@@ -292,7 +277,6 @@ class _SignUpState extends State<SignUp>{
                 padding: const EdgeInsets.only(right: 220.0),
                 child: Text('TIPO DE CUENTA'),
               ),
-              //password textfield
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: Container(
@@ -338,7 +322,6 @@ class _SignUpState extends State<SignUp>{
                         ),
                         SizedBox(height: 10),
 
-    //checkbox profesional/entidad
                         Expanded(
                           child: GestureDetector(
                             onTap: (){
@@ -363,11 +346,32 @@ class _SignUpState extends State<SignUp>{
                             ),
                           ),
                         ),
-                      SizedBox(height: 10),
+                        SizedBox(height: 10),
                       ],
                     ),),
 
                     ),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: GestureDetector(
+                  onTap: () => setState(() {
+                    errorSeleccion = false;
+                    seleccion = 'Voluntario';
+                  }),
+                  child: Card(
+                    color: seleccion == 'Voluntario' ? const Color.fromARGB(255, 255, 160, 131) : Colors.white,
+                    child: const SizedBox(
+                      width: double.infinity,
+                      height: 80,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [Icon(Icons.directions_walk), SizedBox(height: 8), Text('Voluntario')],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
 
               if (errorSeleccion || seleccion.isEmpty)
                   Text(
@@ -382,14 +386,12 @@ class _SignUpState extends State<SignUp>{
                 padding: const EdgeInsets.only(right: 150.0),
                 child: Text('ENTIDAD/ESPECIALIZACIÓN'),
               ),
-              //email textfield
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: Container(
                   decoration: estiloRecuadro,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20.0),
-//                     child: TextField(
                     child: TextFormField(
                       controller: entidadController,
                       enabled: seleccion == 'Profesional/Entidad',

@@ -8,6 +8,7 @@ class UserProvider extends ChangeNotifier {
   List<UserModel> users = [];
   bool isLoading = false;
   String? errorMessage;
+  String? actionErrorMessage;
 
   Future<void> getUsers(String token) async {
     isLoading = true;
@@ -46,10 +47,9 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  /// Desactivar la cuenta de un usuario
+  /// Desactivar cuenta
   Future<bool> deactivateUser(String userId, String token) async {
     try {
-      // Método corregido: deactivateUser
       final respuesta = await _apiService.deactivateUser(userId, token);
       if (respuesta['success'] == true) {
         await getUsers(token); 
@@ -61,7 +61,7 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  /// Eliminar un usuario permanentemente
+  ///eliminar cuenta
   Future<bool> deleteUser(String userId, String token) async {
     try {
       final respuesta = await _apiService.deleteUser(userId, token);
@@ -75,38 +75,38 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  /// Actualizar el nombre de un usuario
-//   Future<bool> updateUser(String userId, String newName, String token) async {
-  Future<bool> updateUser(String userId, String newName, String token, {String? email, String? role, String? organizationName}) async {
-    errorMessage = null;
+  ///actualizar user
+  Future<bool> updateUser(String userId, String newName, String token) async {
+    actionErrorMessage = null;
     try {
-//       final respuesta = await _apiService.updateUser(userId, newName, token);
-      final respuesta = await _apiService.updateUser(userId, newName, token, email: email, role: role, organizationName: organizationName);
+      final respuesta = await _apiService.updateUser(userId, newName, token);
       if (respuesta['success'] == true) {
         await getUsers(token); 
-        if (errorMessage != null) return false;
+        if (errorMessage != null) {
+          actionErrorMessage = errorMessage;
+          return false;
+        }
         final guardados = users.where((user) => user.id == userId);
         if (guardados.isEmpty) {
-          errorMessage = 'No se ha podido verificar el usuario guardado.';
+          actionErrorMessage = 'No se ha podido verificar el usuario guardado.';
           notifyListeners();
           return false;
         }
         final guardado = guardados.first;
-        if (guardado.name != newName ||
-            (email != null && guardado.email != email) ||
-            (role != null && guardado.role.code != role) ||
-            (organizationName != null && (guardado.organizationName ?? '') != organizationName)) {
-          errorMessage = 'La API no ha guardado todos los campos. Puede haberse guardado solo parte de los cambios; revisa los datos. Es necesario ampliar el backend para los campos no admitidos.';
+        if (guardado.name != newName) {
+          actionErrorMessage = 'La API no ha guardado todos los campos';
           notifyListeners();
           return false;
         }
         return true;
       }
-      errorMessage = respuesta['message'] ?? 'No se ha podido actualizar el usuario.';
+
+      actionErrorMessage = respuesta['message'] ?? 'No se ha podido actualizar el usuario.';
       notifyListeners();
       return false;
     } catch (e) {
-      errorMessage = 'No se ha podido actualizar el usuario. Comprueba la conexión.';
+
+      actionErrorMessage = 'No se ha podido actualizar el usuario. Comprueba la conexión.';
       notifyListeners();
       return false;
     }

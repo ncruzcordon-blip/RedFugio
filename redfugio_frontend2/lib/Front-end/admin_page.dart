@@ -15,6 +15,7 @@ class Admin extends StatefulWidget {
 class _AdminState extends State<Admin>{
 
   bool _cargaIniciada = false;
+  bool _accionEnCurso = false;
 
   @override
   void didChangeDependencies(){
@@ -29,32 +30,28 @@ class _AdminState extends State<Admin>{
 
       debugPrint('INICIANDO CARGA DE USUARIOS');
 
-      // context.read<UserProvider>().getUsers(
-      //   authProvider.token!,
-      // );
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         final token = context.read<AuthProvider>().token;
         if (token != null) context.read<UserProvider>().getUsers(token);
       });
     }
-
-    /*if(!_cargaIniciada){
-      _cargaIniciada = true;
-    }
-    
-    final token = context.read<AuthProvider>().token;
-
-    if(token != null){
-      context.read<UserProvider>().getUsers(token);
-    }*/
   }
 
   Future<void> _accionUsuario(UserModel usuario, String accion) async {
     final token = context.read<AuthProvider>().token;
     if (token == null) return;
     final provider = context.read<UserProvider>();
-//     String? nombre;
+    if (_accionEnCurso ||
+        (accion == 'activar' && usuario.active) ||
+        (accion == 'desactivar' && !usuario.active)) {
+      return;
+    }
+    if (accion == 'activar' && usuario.role == UserRole.professional) {
+      final confirmado = await _confirmarEntidad(usuario);
+      if (confirmado != true || !mounted) return;
+    }
+
     Map<String, String>? cambios;
 
     if (accion == 'eliminar') {
@@ -71,23 +68,12 @@ class _AdminState extends State<Admin>{
       );
       if (confirmado != true || !mounted) return;
     } else if (accion == 'editar') {
-//       var nuevoNombre = usuario.name;
-//       nombre = await showDialog<String>(
-//         context: context,
-//         builder: (context) => AlertDialog(
-//           title: const Text('Editar usuario'),
-//           content: TextFormField(initialValue: nuevoNombre, onChanged: (valor) => nuevoNombre = valor, decoration: const InputDecoration(labelText: 'Nombre')),
-//           actions: [
-//             TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
-//             TextButton(onPressed: () => Navigator.pop(context, nuevoNombre.trim()), child: const Text('Guardar')),
-//           ],
-//         ),
-//       );
-//       if (nombre == null || nombre.isEmpty || !mounted) return;
       cambios = await _editarUsuario(usuario);
       if (cambios == null || !mounted) return;
     }
 
+    setState(() => _accionEnCurso = true);
+    try {
     final bool exito;
     switch (accion) {
       case 'activar':
@@ -100,25 +86,50 @@ class _AdminState extends State<Admin>{
         exito = await provider.deleteUser(usuario.id, token);
         break;
       case 'editar':
-//         exito = await provider.updateUser(usuario.id, nombre!, token);
-        exito = await provider.updateUser(usuario.id, cambios!['name']!, token, email: cambios['email'], role: cambios['role'], organizationName: cambios['organization_name']);
+        exito = await provider.updateUser(usuario.id, cambios!['name']!, token);
         break;
       default:
         return;
     }
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-//       content: Text(exito ? 'Operaci?n realizada correctamente.' : 'No se ha podido realizar la operaci?n.'),
-      content: Text(exito ? 'Operación realizada correctamente.' : (accion == 'editar' ? provider.errorMessage : null) ?? 'No se ha podido realizar la operación.'),
+      content: Text(exito ? 'Operación realizada correctamente.' : (accion == 'editar' ? provider.actionErrorMessage : null) ?? 'No se ha podido realizar la operación.'),
     ));
+    } finally {
+      if (mounted) setState(() => _accionEnCurso = false);
+    }
+  }
+
+  Future<bool?> _confirmarEntidad(UserModel usuario) {
+    final institucion = usuario.organizationName?.trim() ?? '';
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            const Expanded(child: Text('Verificar entidad')),
+            IconButton(
+              tooltip: 'Cerrar',
+              onPressed: () => Navigator.pop(context, false),
+              icon: const Icon(Icons.close),
+            ),
+          ],
+        ),
+        content: Text('Institución: ${institucion.isEmpty ? "Sin organización indicada" : institucion}\n\nConsulta y comprueba que esta institución existe y que el usuario la representa antes de confirmar la activación.'),
+        actions: [
+          ElevatedButton(
+            onPressed: institucion.isEmpty ? null : () => Navigator.pop(context, true),
+            child: const Text('Confirmar activación'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<Map<String, String>?> _editarUsuario(UserModel usuario) {
     final formKey = GlobalKey<FormState>();
     var nombre = usuario.name;
-    var email = usuario.email;
-    var rol = usuario.role.code;
-    var organizacion = usuario.organizationName ?? '';
     return showDialog<Map<String, String>>(
       context: context,
       builder: (context) => StatefulBuilder(
@@ -130,35 +141,17 @@ class _AdminState extends State<Admin>{
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  //editar nombre
                   TextFormField(
                     initialValue: nombre,
                     decoration: const InputDecoration(labelText: 'Nombre'),
                     onChanged: (valor) => nombre = valor.trim(),
                     validator: (valor) => valor == null || valor.trim().isEmpty ? 'Requerido' : null,
                   ),
-                  TextFormField(
-                    initialValue: email,
-                    decoration: const InputDecoration(labelText: 'Correo electrónico'),
-                    keyboardType: TextInputType.emailAddress,
-                    onChanged: (valor) => email = valor.trim(),
-                    validator: (valor) => valor != null && RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(valor.trim()) ? null : 'Correo electrónico no válido',
-                  ),
-                  DropdownButtonFormField<String>(
-                    initialValue: rol,
-                    decoration: const InputDecoration(labelText: 'Tipo de cuenta'),
-                    items: const [
-                      DropdownMenuItem(value: 'u', child: Text('Usuario')),
-                      DropdownMenuItem(value: 'p', child: Text('Profesional/Entidad')),
-                    ],
-                    onChanged: (valor) { if (valor != null) actualizar(() => rol = valor); },
-                  ),
-                  TextFormField(
-                    initialValue: organizacion,
-                    enabled: rol == 'p',
-                    decoration: const InputDecoration(labelText: 'Organización'),
-                    onChanged: (valor) => organizacion = valor.trim(),
-                    validator: (valor) => rol == 'p' && (valor == null || valor.trim().isEmpty) ? 'Indica el nombre de tu organización' : null,
-                  ),
+
+                  
+
+                 
                 ],
               ),
             ),
@@ -168,7 +161,7 @@ class _AdminState extends State<Admin>{
             TextButton(
               onPressed: () {
                 if (formKey.currentState!.validate()) {
-                  Navigator.pop(context, {'name': nombre, 'email': email, 'role': rol, 'organization_name': rol == 'p' ? organizacion : ''});
+                  Navigator.pop(context, {'name': nombre});
                 }
               },
               child: const Text('Guardar'),
@@ -179,18 +172,22 @@ class _AdminState extends State<Admin>{
     );
   }
 
+  //activar/desactivar botones
   Widget _botonAccion(UserModel usuario, String accion, String etiqueta, IconData icono, Color color) {
+    final habilitada = !_accionEnCurso &&
+        (accion != 'activar' || !usuario.active) &&
+        (accion != 'desactivar' || usuario.active);
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
         child: Material(
-          color: color,
+          color: habilitada ? color : Colors.grey.shade300,
           borderRadius: BorderRadius.circular(12),
           clipBehavior: Clip.antiAlias,
           child: Tooltip(
             message: etiqueta,
             child: InkWell(
-              onTap: () => _accionUsuario(usuario, accion),
+              onTap: habilitada ? () => _accionUsuario(usuario, accion) : null,
               child: Center(child: Icon(icono, color: Colors.white, size: 18)),
             ),
           ),
@@ -225,32 +222,15 @@ class _AdminState extends State<Admin>{
   Widget build(BuildContext context){
 
     final userProvider = context.watch<UserProvider>();
+    final usuariosVisibles = userProvider.users
+        .where((usuario) => usuario.role != UserRole.admin)
+        .toList();
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 231, 231, 231),
-
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            heightFactor: 1,
-            child: ElevatedButton.icon(
-              onPressed: () => context.read<AuthProvider>().logout(),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(255, 151, 151, 1),
-                foregroundColor: Colors.white,
-              ),
-              icon: const Icon(Icons.logout),
-              label: const Text('Log out'),
-            ),
-          ),
-        ),
-      ),
       body: SafeArea(
         child: Column(
-            children: [
-             
+            children: [          
 //CABECERA
               Container(
                 width: double.infinity,
@@ -312,8 +292,7 @@ class _AdminState extends State<Admin>{
                       return const Center(child: CircularProgressIndicator());
                     }
 
-                    //ERROR
-                    if(userProvider.errorMessage != null){
+                    if(userProvider.errorMessage != null && usuariosVisibles.isEmpty){
                       return Center(
                         child: Text(
                           userProvider.errorMessage!,
@@ -323,7 +302,7 @@ class _AdminState extends State<Admin>{
                     }
 
                     //LISTA VACÍA
-                    if(userProvider.users.isEmpty){
+                    if(usuariosVisibles.isEmpty){
                       return const Center(
                         child: Text('No hay usuarios registrados'),
                       );
@@ -332,12 +311,9 @@ class _AdminState extends State<Admin>{
                     //LISTA DE USUARIOS
                     return ListView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 15),
-
-                      itemCount: userProvider.users.length,
-
+                      itemCount: usuariosVisibles.length,
                       itemBuilder: (context, index){
-
-                        final usuario = userProvider.users[index];
+                        final usuario = usuariosVisibles[index];
 
                         //Obtener iniciales
                         final partesNombre = usuario.name.trim().split(' ');
@@ -356,6 +332,10 @@ class _AdminState extends State<Admin>{
                             tipo = 'Usuario';
                             break;
                           
+                          case UserRole.passerby:
+                            tipo = 'Voluntario';
+                            break;
+
                           case UserRole.professional:
                             tipo = 'Profesional';
                             break;
@@ -364,7 +344,7 @@ class _AdminState extends State<Admin>{
                             tipo = 'Administrador';
                             break;
                         }
-
+                        //botones 
                         return Slidable(
                           key: ValueKey(usuario.id),
                           endActionPane: usuario.role == UserRole.admin ? null : ActionPane(
@@ -383,30 +363,6 @@ class _AdminState extends State<Admin>{
                               ),
                             ],
                           ),
-//                           endActionPane: usuario.role == UserRole.admin ? null : ActionPane(
-//                             motion: const ScrollMotion(),
-//                             extentRatio: 0.8,
-//                             children: [
-//                               SlidableAction(
-//                                 onPressed: (_) => _accionUsuario(usuario, usuario.active ? 'desactivar' : 'activar'),
-//                                 icon: usuario.active ? Icons.block : Icons.check,
-//                                 label: usuario.active ? 'Desactivar' : 'Activar',
-//                                 backgroundColor: Colors.orange,
-//                               ),
-//                               SlidableAction(
-//                                 onPressed: (_) => _accionUsuario(usuario, 'editar'),
-//                                 icon: Icons.edit,
-//                                 label: 'Editar',
-//                                 backgroundColor: Colors.blue,
-//                               ),
-//                               SlidableAction(
-//                                 onPressed: (_) => _accionUsuario(usuario, 'eliminar'),
-//                                 icon: Icons.delete,
-//                                 label: 'Eliminar',
-//                                 backgroundColor: Colors.red,
-//                               ),
-//                             ],
-//                           ),
                           child: Card(
                           color: Colors.white,
                           elevation: 1,
@@ -470,7 +426,7 @@ class _AdminState extends State<Admin>{
                                   //TIPO DE CUENTA
                                   _crearEtiqueta(
                                     tipo,
-                                    Colors.green,
+                                    const Color.fromARGB(255, 0, 0, 0),
                                   ),
 
                                   const SizedBox(height: 6),
@@ -478,10 +434,8 @@ class _AdminState extends State<Admin>{
                                   //ESTADO
                                   _crearEtiqueta(
                                     usuario.active ? 'Activo' : 'Inactivo',
-                                    usuario.active ? Colors.green : Colors.orange,
-                                    
+                                    usuario.active ? const Color.fromARGB(255, 0, 0, 0) : const Color.fromARGB(255, 60, 0, 170),
                                   ),
-
                                   ],
                                 )
                                 ],
