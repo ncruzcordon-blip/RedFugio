@@ -3,8 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:redfugio_frontend2/features/authentication/models/user_model.dart';
 class ApiService {
 
-  //Aqui establecemos la conexión estandar con la API y luego iremos acceciendo a las diferentes
-  //conexiones
+  //Conexion API
   final Dio _dio= Dio(
     BaseOptions(
       baseUrl: 'https://redfugioapi.iaknowhow.es/public/api',
@@ -29,8 +28,6 @@ class ApiService {
     return respuesta.data;
 
     }on DioException catch(e){
-      print('STATUS CODE: ${e.response?.statusCode}');
-      print('RESPUESTA API: ${e.response?.data}');
 
       if(e.response !=null && e.response?.data != null){
         return e.response!.data;
@@ -39,14 +36,6 @@ class ApiService {
     
     //no ha habido respuesta del servidor
     throw Exception('No se ha podido conectar con el servidor');
-
-    //Comprobación de existencia de usuario
-    //devuelve el data que contiene todos los datos de dicho usuario 
-    /*if(respuesta.data['success'] == false){
-      return respuesta.data['message'];
-    } 
-    //devuelve el data que contiene todos los datos de dicho usuario  
-    return respuesta.data;*/
   }
 
   //register 
@@ -76,12 +65,6 @@ class ApiService {
     }
     
     throw Exception('No se ha podido conectar con el servidor');
-
-    /*if(respuesta.data['success'] == false){
-      return respuesta.data['message'];
-    }
-    return respuesta.data;*/
-
   }
 
   //getUsers
@@ -108,7 +91,7 @@ class ApiService {
     }
   }
 
-  //Activate
+  //Activar user
   Future activateUser(String idUser, String token) async {
     try{
       final respuesta= await _dio.post(
@@ -133,6 +116,7 @@ class ApiService {
     }
   }
 
+  //desactivar user
   Future deactivateUser(String idUser, String token) async{
      try{
       final respuesta= await _dio.post(
@@ -157,6 +141,7 @@ class ApiService {
     }
   }
 
+  //borrar user
    Future deleteUser(String idUser, String token) async{
      try{
       final respuesta= await _dio.post(
@@ -181,17 +166,14 @@ class ApiService {
     }
   }
 
-//   Future updateUser(String idUser, String newName, String token) async {
-  Future updateUser(String idUser, String newName, String token, {String? email, String? role, String? organizationName}) async {
+ //actualizar campos
+  Future updateUser(String idUser, String newName, String token) async {
     try {
       final respuesta = await _dio.post(
         '/updateUser',
         data: {
           'id': idUser,
           'name': newName,
-          if (email != null) 'email': email,
-          if (role != null) 'role': role,
-          if (organizationName != null) 'organization_name': organizationName,
         },
         options: Options(
           headers: {

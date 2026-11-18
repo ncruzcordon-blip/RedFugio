@@ -18,30 +18,6 @@ class AuthProvider extends ChangeNotifier{
 
   AuthProvider(){
     comprobarToken();
-    crearAdministradorInicial();
-  }
-
-  Future<void> crearAdministradorInicial() async {
-    try {
-      final respuesta = await ApiService().register(
-        'Administrador',
-        'miriammb2004@gmail.com',
-        'miri1234',
-        'a',
-        null,
-      );
-      if (respuesta['success'] == true) {
-        debugPrint('Administrador registrado. La activaci?n y verificaci?n dependen del servidor.');
-      } else {
-        // Si el correo ya existe, la API rechaza el registro sin modificar la cuenta.
-        debugPrint('Registro inicial de administrador: ${respuesta['message']}');
-        if (respuesta['data'] is Map && respuesta['data']['error'] != null) {
-          debugPrint('${respuesta['data']['error']}');
-        }
-      }
-    } catch (e) {
-      debugPrint('No se ha podido registrar el administrador inicial: $e');
-    }
   }
 
   Future<void> comprobarToken() async{

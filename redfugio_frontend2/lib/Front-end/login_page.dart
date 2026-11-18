@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
+import 'admin_page.dart';
+import 'home.dart';
+import 'package:redfugio_frontend2/features/authentication/models/user_model.dart';
 import 'package:provider/provider.dart';
 import 'package:redfugio_frontend2/features/authentication/providers/auth_provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
+  static Widget pantallaTrasLogin(UserRole? role) {
+    if (role == UserRole.admin) {
+      return const Admin();
+    }
+    return const Home();
+  }
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
-
 
 
 class _LoginPageState extends State<LoginPage>{
@@ -25,7 +34,7 @@ class _LoginPageState extends State<LoginPage>{
   }
 
   void _loginPresionado() async {
-    // 1. Validamos que el formulario cumpla los requisitos de los campos
+    //Validar que el formulario
     if (formKey.currentState!.validate()) {
       final authProvider = context.read<AuthProvider>();
 
@@ -34,11 +43,11 @@ class _LoginPageState extends State<LoginPage>{
         passwordController.text.trim(),
       );
 
-      // Verificación de seguridad por si el widget se desmontó durante la petición asíncrona
+      // Verificación de seguridad por si el widget se desmontó
       if (!mounted) return;
-
       if (!exito){
-      // Muestra el mensaje de error de la API (ej: cuenta no activada o datos incorrectos)
+
+      //mensaje de error de la API
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.redAccent,
@@ -67,7 +76,6 @@ class _LoginPageState extends State<LoginPage>{
 
               Icon(Icons.phone_android, size: 40,),
 
-              //Bienvenido!
               Text('Bienvenido!', 
                 style:TextStyle(
                 fontSize: 54),
@@ -115,7 +123,7 @@ class _LoginPageState extends State<LoginPage>{
               ),
               
               SizedBox(height: 10),
-              //password textfield
+ //password textfield
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: Container(
@@ -189,7 +197,6 @@ class _LoginPageState extends State<LoginPage>{
               ) 
         ],),
           ),
-      
         )
       )
     );
