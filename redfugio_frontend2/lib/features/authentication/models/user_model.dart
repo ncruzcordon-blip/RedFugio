@@ -16,8 +16,7 @@ enum UserRole{
       orElse: () => UserRole.user,
     );
   }
-  
-  }
+}
 
 class UserModel{
   final String id;
@@ -37,18 +36,14 @@ class UserModel{
 
   });   
 
-  //Ahora vamos a realizar la conversión de los datos a JSON para que sea más facil 
-  //a la hora hacer la petición
-
+  //Conversión de datos a json
   factory UserModel.fromJson(Map<String, dynamic> json){
-    return UserModel(
-      //id: json['id'] is int ? json['id'] : int.parse(json['id'].toString()), 
+    return UserModel( 
       id: json['id'].toString(),
       name: json['name'] ?? '', 
       email: json['email'] ?? '',
       organizationName: json['organization_name'], 
       role: UserRole.fromCode(json['role'] ?? ''), 
-      // active: json['active']
       active: json['actived'] == true || json['actived'] == 1 || json['actived'] == '1'
       );
   }
