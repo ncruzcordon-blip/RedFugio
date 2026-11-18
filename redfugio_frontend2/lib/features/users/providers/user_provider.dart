@@ -34,6 +34,7 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
+  //ACTIVAR CUENTA
   Future<bool> activateUser(String userId, String token) async {
     try {
       final respuesta = await _apiService.activateUser(userId, token);
@@ -47,7 +48,7 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  /// Desactivar cuenta
+  //DESACTIVAR CUENTA
   Future<bool> deactivateUser(String userId, String token) async {
     try {
       final respuesta = await _apiService.deactivateUser(userId, token);
@@ -61,7 +62,7 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  ///eliminar cuenta
+  //ELIMINAR CUENTA
   Future<bool> deleteUser(String userId, String token) async {
     try {
       final respuesta = await _apiService.deleteUser(userId, token);
@@ -75,7 +76,7 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  ///actualizar user
+  //ACTUALIZAR CUENTA
   Future<bool> updateUser(String userId, String newName, String token) async {
     actionErrorMessage = null;
     try {

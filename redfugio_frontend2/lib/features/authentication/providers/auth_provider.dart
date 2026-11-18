@@ -64,7 +64,6 @@ class AuthProvider extends ChangeNotifier{
         return true;
 
       } else {
-//         errorMessage = respuesta['message'] ?? 'Error de autenticación';
         errorMessage = _detalleError(respuesta);
         
         isLoading = false;
@@ -102,9 +101,6 @@ class AuthProvider extends ChangeNotifier{
         return false;
       }
     }catch(e){
-//       token= null;
-//       userActual=null;
-//       await _almacenamientoToken.deleteToken();
       errorMessage = 'No se ha podido completar el registro. Comprueba la conexión e inténtalo de nuevo.';
       isLoading = false;
 
@@ -119,8 +115,5 @@ class AuthProvider extends ChangeNotifier{
     await _almacenamientoToken.deleteToken();
     notifyListeners();
   }
-
-
-
 
 }

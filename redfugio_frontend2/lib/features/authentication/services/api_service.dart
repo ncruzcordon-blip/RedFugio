@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:redfugio_frontend2/features/authentication/models/user_model.dart';
 class ApiService {
 
-  //Conexion API
+  //CONEXION API
   final Dio _dio= Dio(
     BaseOptions(
       baseUrl: 'https://redfugioapi.iaknowhow.es/public/api',
@@ -14,7 +14,7 @@ class ApiService {
 
   //PETICIONES 
 
-  //login 
+  //LOGIN
   Future login(String email, String password) async{
     try{
         final respuesta= await _dio.post(
@@ -38,7 +38,7 @@ class ApiService {
     throw Exception('No se ha podido conectar con el servidor');
   }
 
-  //register 
+  //REGISTRO
   Future register(String name, String email, String password, String role, String? nombreOrganizacion) async{
     
     try{
@@ -67,7 +67,7 @@ class ApiService {
     throw Exception('No se ha podido conectar con el servidor');
   }
 
-  //getUsers
+  //OBTENER USUARIOS
   Future<List<UserModel>> getUsers(String token) async{
     try{
       final respuesta= await _dio.get(
@@ -91,7 +91,7 @@ class ApiService {
     }
   }
 
-  //Activar user
+  //ACTIVAR USUARIO
   Future activateUser(String idUser, String token) async {
     try{
       final respuesta= await _dio.post(
@@ -102,11 +102,11 @@ class ApiService {
         options: Options(
           headers: {
             'Authorization' : 'Bearer $token'
-          }
-          )
-        );
+          },
+        ),
+      );
 
-        return respuesta.data;
+      return respuesta.data;
 
     }on DioException catch (e){
       if (e.response != null && e.response?.data != null) {
@@ -116,7 +116,7 @@ class ApiService {
     }
   }
 
-  //desactivar user
+  //DESACTIVAR USUARIO
   Future deactivateUser(String idUser, String token) async{
      try{
       final respuesta= await _dio.post(
@@ -127,21 +127,21 @@ class ApiService {
         options: Options(
           headers: {
             'Authorization' : 'Bearer $token'
-          }
-          )
-        );
+          },
+        ),
+      );
 
-        return respuesta.data;
+    return respuesta.data;
 
     }on DioException catch (e){
       if (e.response != null && e.response?.data != null) {
         return e.response?.data;
       }
-        throw Exception('Error al desactivar el usuario: ${e.message}');
+      throw Exception('Error al desactivar el usuario: ${e.message}');
     }
   }
 
-  //borrar user
+  //BORRAR USUARIO
    Future deleteUser(String idUser, String token) async{
      try{
       final respuesta= await _dio.post(
@@ -152,11 +152,11 @@ class ApiService {
         options: Options(
           headers: {
             'Authorization' : 'Bearer $token'
-          }
-          )
-        );
+          },
+        ),
+      );
 
-        return respuesta.data;
+      return respuesta.data;
 
     }on DioException catch (e){
       if (e.response != null && e.response?.data != null) {
@@ -166,7 +166,7 @@ class ApiService {
     }
   }
 
- //actualizar campos
+ //ACTUALIZAR NOMBRE
   Future updateUser(String idUser, String newName, String token) async {
     try {
       final respuesta = await _dio.post(
@@ -182,7 +182,8 @@ class ApiService {
         ),
       );
 
-      return respuesta.data;
+    return respuesta.data;
+
     } on DioException catch (e) {
       if (e.response != null && e.response?.data != null) {
         return e.response?.data;
@@ -190,5 +191,4 @@ class ApiService {
       throw Exception('Error al actualizar usuario: ${e.message}');
     }
   }
-
 }

@@ -42,9 +42,7 @@ class _AdminState extends State<Admin>{
     final token = context.read<AuthProvider>().token;
     if (token == null) return;
     final provider = context.read<UserProvider>();
-    if (_accionEnCurso ||
-        (accion == 'activar' && usuario.active) ||
-        (accion == 'desactivar' && !usuario.active)) {
+    if (_accionEnCurso || (accion == 'activar' && usuario.active) || (accion == 'desactivar' && !usuario.active)) {
       return;
     }
     if (accion == 'activar' && usuario.role == UserRole.professional) {
@@ -54,6 +52,7 @@ class _AdminState extends State<Admin>{
 
     Map<String, String>? cambios;
 
+//CONFIRMACION ELIMINAR USUARIO
     if (accion == 'eliminar') {
       final confirmado = await showDialog<bool>(
         context: context,
@@ -100,6 +99,7 @@ class _AdminState extends State<Admin>{
     }
   }
 
+//CONFIRMACION INSTITUCIÓN
   Future<bool?> _confirmarEntidad(UserModel usuario) {
     final institucion = usuario.organizationName?.trim() ?? '';
     return showDialog<bool>(
@@ -127,6 +127,7 @@ class _AdminState extends State<Admin>{
     );
   }
 
+//EDITAR USUARIO
   Future<Map<String, String>?> _editarUsuario(UserModel usuario) {
     final formKey = GlobalKey<FormState>();
     var nombre = usuario.name;
@@ -148,10 +149,6 @@ class _AdminState extends State<Admin>{
                     onChanged: (valor) => nombre = valor.trim(),
                     validator: (valor) => valor == null || valor.trim().isEmpty ? 'Requerido' : null,
                   ),
-
-                  
-
-                 
                 ],
               ),
             ),
@@ -172,7 +169,7 @@ class _AdminState extends State<Admin>{
     );
   }
 
-  //activar/desactivar botones
+//BOTONES ACTIVAR Y DESACTIVAR CUENTA
   Widget _botonAccion(UserModel usuario, String accion, String etiqueta, IconData icono, Color color) {
     final habilitada = !_accionEnCurso &&
         (accion != 'activar' || !usuario.active) &&
@@ -197,7 +194,6 @@ class _AdminState extends State<Admin>{
   }
 
   Widget _crearEtiqueta(String texto, Color color) {
-
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 9,
@@ -267,10 +263,8 @@ class _AdminState extends State<Admin>{
 
 //TEXTO INFORMATIVO
               Padding(padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-
                 child: const Align(
                   alignment: Alignment.centerLeft,
-
                   child: Text('DESLIZA UNA FILA PARA VER LAS ACCIONES',
                     style: TextStyle(
                       fontSize: 12,
@@ -279,7 +273,6 @@ class _AdminState extends State<Admin>{
                     ),
                   ),
                 ),
-
               ),
         
 //LISTA DE USUARIOS
@@ -344,6 +337,7 @@ class _AdminState extends State<Admin>{
                             tipo = 'Administrador';
                             break;
                         }
+
                         //botones 
                         return Slidable(
                           key: ValueKey(usuario.id),
@@ -379,10 +373,9 @@ class _AdminState extends State<Admin>{
                             child: Row(
                               children: [
 
-                                //AVATAR
+                                //Avatar
                                 CircleAvatar(radius: 22,
                                   backgroundColor: const Color(0xFFE2F4F1),
-                                  
                                   child: Text(
                                     iniciales,
                                     style: const TextStyle(
@@ -393,12 +386,11 @@ class _AdminState extends State<Admin>{
                                 ),
 
                               const SizedBox(width: 12),
-                              //INFORMACION DEL USUARIO
+
+                              //Info del usuario
                               Expanded(child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-
                                 children: [
-
                                   Text(
                                     usuario.name,
                                     style: const TextStyle(
@@ -423,7 +415,7 @@ class _AdminState extends State<Admin>{
                                    Row(
                                   children: [
 
-                                  //TIPO DE CUENTA
+                                  //tipo de cuenta
                                   _crearEtiqueta(
                                     tipo,
                                     const Color.fromARGB(255, 0, 0, 0),
@@ -431,7 +423,7 @@ class _AdminState extends State<Admin>{
 
                                   const SizedBox(height: 6),
 
-                                  //ESTADO
+                                  //estado
                                   _crearEtiqueta(
                                     usuario.active ? 'Activo' : 'Inactivo',
                                     usuario.active ? const Color.fromARGB(255, 0, 0, 0) : const Color.fromARGB(255, 60, 0, 170),
@@ -442,15 +434,15 @@ class _AdminState extends State<Admin>{
                               )
                             ),
                            ],
-                         ),
                           ),
                           ),
-                        );
-                      }
-                    );
-                  },
-                ),
+                        ),
+                      );
+                    }
+                  );
+                },
               ),
+            ),
           ]
         )
       )

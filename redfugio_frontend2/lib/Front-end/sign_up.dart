@@ -48,8 +48,9 @@ class _SignUpState extends State<SignUp>{
     super.dispose();
   }
 
-  //Ejecutar registro
+  //EJECUTAR REGISTRO
   void _registroPresionado() async {
+
     //tipo de cuenta
     if (seleccion.isEmpty) {
       setState(() {
@@ -74,6 +75,7 @@ class _SignUpState extends State<SignUp>{
         organizationName: roleCode == 'p' ? entidadController.text.trim() : null,
       );
 
+//comprobar si el widget sigue montado
       if (!mounted) return;
 
       if (exito) {
@@ -86,6 +88,7 @@ class _SignUpState extends State<SignUp>{
 
         //Volver a login
         Navigator.pop(context);
+
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -101,7 +104,6 @@ class _SignUpState extends State<SignUp>{
   
   @override
   Widget build(BuildContext context){
-
     final authProvider = context.watch<AuthProvider>();
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 231, 231, 231),
@@ -113,7 +115,7 @@ class _SignUpState extends State<SignUp>{
           child: Column(
             children: [
              
-//Crear cuenta
+//CREAR CUENTA
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
@@ -136,6 +138,7 @@ class _SignUpState extends State<SignUp>{
               ),
               
               SizedBox(height: 20),
+
 //NOMBRE COMPLETO
               Padding(
                 padding: const EdgeInsets.only(right: 185.0),
@@ -169,7 +172,7 @@ class _SignUpState extends State<SignUp>{
               
               SizedBox(height: 20),
 
-//campo email
+//EMAIL
               Padding(
                 padding: const EdgeInsets.only(right: 185.0),
                 child: Text('CORREO ELECTRÓNICO'),
@@ -202,7 +205,7 @@ class _SignUpState extends State<SignUp>{
               ),
               
               SizedBox(height: 20),
-//Contraseña
+//CONTRASEÑA
               Padding(
                 padding: const EdgeInsets.only(right: 250.0),
                 child: Text('CONTRASEÑA'),
@@ -235,9 +238,9 @@ class _SignUpState extends State<SignUp>{
                 ),
               ),
 
-//CONFIRMAR CONTRASEÑA
               SizedBox(height: 20),
 
+//CONFIRMAR CONTRASEÑA
               Padding(
                 padding: const EdgeInsets.only(right: 160.0),
                 child: Text('CONFIRMAR CONTRASEÑA'),
@@ -294,7 +297,7 @@ class _SignUpState extends State<SignUp>{
                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        //checkbox usuarios
+                        //usuarios
                         Expanded(
                           child: GestureDetector(
                             onTap: (){
@@ -346,12 +349,14 @@ class _SignUpState extends State<SignUp>{
                             ),
                           ),
                         ),
+
                         SizedBox(height: 10),
                       ],
-                    ),),
-
                     ),
+                  ),
+                ),
 
+              //Voluntario
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 14),
                 child: GestureDetector(
@@ -411,7 +416,7 @@ class _SignUpState extends State<SignUp>{
 
               SizedBox(height: 20),
 
- //sign in button
+ //BOTON REGISTRO
             Padding(
               padding: const EdgeInsetsGeometry.symmetric(horizontal: 25),
               child: SizedBox(

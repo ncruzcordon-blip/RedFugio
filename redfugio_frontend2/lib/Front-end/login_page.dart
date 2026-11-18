@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage>{
   }
 
   void _loginPresionado() async {
-    //Validar que el formulario
+    //Validar formulario
     if (formKey.currentState!.validate()) {
       final authProvider = context.read<AuthProvider>();
 
@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage>{
         passwordController.text.trim(),
       );
 
-      // Verificación de seguridad por si el widget se desmontó
+      // Verificación por si el widget se desmontó
       if (!mounted) return;
       if (!exito){
 
@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage>{
               ),
               SizedBox(height: 50),
 
-//email textfield
+//EMAIL
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: Container(
@@ -123,7 +123,8 @@ class _LoginPageState extends State<LoginPage>{
               ),
               
               SizedBox(height: 10),
- //password textfield
+
+ //CONTRASEÑA
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: Container(
@@ -146,17 +147,18 @@ class _LoginPageState extends State<LoginPage>{
                       },
 
                       decoration: InputDecoration(
-                      border: InputBorder.none, 
-                      hintText: 'Password',
+                        border: InputBorder.none, 
+                        hintText: 'Password',
+                      ),
+
                     ),
-                                ),
                   ),
-                    
                 ),
               ),
               
             SizedBox(height: 10),
 
+//BOTON INICIO SESION
               Padding(
               padding: const EdgeInsetsGeometry.symmetric(horizontal: 25),
               child: SizedBox(
@@ -179,7 +181,8 @@ class _LoginPageState extends State<LoginPage>{
               ),),
 
             SizedBox(height: 10),
-//CREAR CUENTA
+
+//LINK CREAR CUENTA
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
