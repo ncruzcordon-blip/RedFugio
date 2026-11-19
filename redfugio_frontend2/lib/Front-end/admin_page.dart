@@ -90,6 +90,7 @@ class _AdminState extends State<Admin>{
       default:
         return;
     }
+    //comprobar si el wir¡dget sigue montado o no
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(exito ? 'Operación realizada correctamente.' : (accion == 'editar' ? provider.actionErrorMessage : null) ?? 'No se ha podido realizar la operación.'),
@@ -112,6 +113,9 @@ class _AdminState extends State<Admin>{
             IconButton(
               tooltip: 'Cerrar',
               onPressed: () => Navigator.pop(context, false),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 253, 204, 129)
+              ),
               icon: const Icon(Icons.close),
             ),
           ],
@@ -120,6 +124,9 @@ class _AdminState extends State<Admin>{
         actions: [
           ElevatedButton(
             onPressed: institucion.isEmpty ? null : () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 171, 248, 174)
+              ),
             child: const Text('Confirmar activación'),
           ),
         ],
@@ -153,6 +160,7 @@ class _AdminState extends State<Admin>{
               ),
             ),
           ),
+          //boton cancelar/guardar
           actions: [
             TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
             TextButton(
@@ -179,7 +187,7 @@ class _AdminState extends State<Admin>{
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
         child: Material(
           color: habilitada ? color : Colors.grey.shade300,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(9),
           clipBehavior: Clip.antiAlias,
           child: Tooltip(
             message: etiqueta,
@@ -201,7 +209,7 @@ class _AdminState extends State<Admin>{
       ),
 
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 255, 200, 200),
+        color: const Color.fromARGB(255, 253, 157, 150),
         borderRadius: BorderRadius.circular(20),
       ),
 
@@ -231,7 +239,7 @@ class _AdminState extends State<Admin>{
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 16),
-                color: const Color.fromRGBO(255, 151, 151, 1),
+                color:  const Color.fromARGB(255, 252, 110, 100),
 
                   child: Row(
                     children: [
@@ -349,9 +357,9 @@ class _AdminState extends State<Admin>{
                                 child: Column(
                                   children: [
                                     _botonAccion(usuario, 'activar', 'Activar', Icons.check, Colors.green),
-                                    _botonAccion(usuario, 'desactivar', 'Desactivar', Icons.pause, Colors.orange),
-                                    _botonAccion(usuario, 'editar', 'Editar', Icons.edit, Colors.blue),
-                                    _botonAccion(usuario, 'eliminar', 'Eliminar', Icons.delete_outline, Colors.red),
+                                    _botonAccion(usuario, 'desactivar', 'Desactivar', Icons.pause, const Color.fromARGB(255, 250, 196, 114)),
+                                    _botonAccion(usuario, 'editar', 'Editar', Icons.edit, const Color.fromARGB(255, 54, 160, 247)),
+                                    _botonAccion(usuario, 'eliminar', 'Eliminar', Icons.delete_outline, const Color.fromARGB(255, 247, 91, 80)),
                                   ],
                                 ),
                               ),
@@ -375,7 +383,7 @@ class _AdminState extends State<Admin>{
 
                                 //Avatar
                                 CircleAvatar(radius: 22,
-                                  backgroundColor: const Color(0xFFE2F4F1),
+                                  backgroundColor: const Color.fromARGB(255, 206, 223, 220),
                                   child: Text(
                                     iniciales,
                                     style: const TextStyle(

@@ -74,7 +74,11 @@ class _LoginPageState extends State<LoginPage>{
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
 
-              Icon(Icons.phone_android, size: 40,),
+              Image.asset('assets/images/logoRedFugio.png',
+                width: 80,
+                height: 80,
+                fit: BoxFit.contain,
+              ),
 
               Text('Bienvenido!', 
                 style:TextStyle(
